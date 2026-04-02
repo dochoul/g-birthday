@@ -83,7 +83,10 @@ export interface EmployeeSummary {
   퇴직예정명단: { name: string; birthday: string }[];
 }
 
-export function fetchMonthlyStats(leaveNames: Set<string> = new Set()): MonthlyStat[] {
+type LeaveEmployeeRef = { name: string; koreanName: string; birthday?: string };
+
+export function fetchMonthlyStats(leaveEmployeeList: LeaveEmployeeRef[] = []): MonthlyStat[] {
+  const leaveNames = new Set(leaveEmployeeList.map((e) => e.koreanName));
   const dataDir = process.env.DATA_DIR || path.join(__dirname, '../../data');
   const filePath = path.join(dataDir, 'gabia_birthday.xlsx');
   const workbook = XLSX.readFile(filePath);
@@ -127,6 +130,17 @@ export function fetchMonthlyStats(leaveNames: Set<string> = new Set()): MonthlyS
     }
   });
 
+  // 엑셀에 없는 HR API 휴직자 추가 (생일 정보가 있을 때만 월별 통계에 반영)
+  for (const leaveEmp of leaveEmployeeList) {
+    if (!processedNames.has(leaveEmp.koreanName) && leaveEmp.birthday) {
+      const monthIdx = parseInt(leaveEmp.birthday.split('-')[1]) - 1;
+      if (monthIdx >= 0 && monthIdx < 12) {
+        stats[monthIdx].휴직중++;
+      }
+      processedNames.add(leaveEmp.koreanName);
+    }
+  }
+
   return stats;
 }
 
@@ -135,7 +149,8 @@ export function fetchMonthlyStats(leaveNames: Set<string> = new Set()): MonthlyS
  * 휴직중/수습/퇴직예정 직원의 명단과 생일 정보를 포함한다.
  * 동일 이름 중복은 제거한다.
  */
-export function fetchEmployeeSummary(leaveNames: Set<string> = new Set()): EmployeeSummary {
+export function fetchEmployeeSummary(leaveEmployeeList: LeaveEmployeeRef[] = []): EmployeeSummary {
+  const leaveNames = new Set(leaveEmployeeList.map((e) => e.koreanName));
   const dataDir = process.env.DATA_DIR || path.join(__dirname, '../../data');
   const filePath = path.join(dataDir, 'gabia_birthday.xlsx');
   const workbook = XLSX.readFile(filePath);
@@ -183,6 +198,16 @@ export function fetchEmployeeSummary(leaveNames: Set<string> = new Set()): Emplo
       summary.재직중++;
     }
   });
+
+  // 엑셀에 없는 HR API 휴직자 추가
+  for (const leaveEmp of leaveEmployeeList) {
+    if (!processedNames.has(leaveEmp.koreanName)) {
+      summary.total++;
+      summary.휴직중++;
+      summary.휴직명단.push({ name: leaveEmp.name, birthday: leaveEmp.birthday || '' });
+      processedNames.add(leaveEmp.koreanName);
+    }
+  }
 
   // 생일 기준 정렬 (월-일)
   const sortByBirthday = (a: { birthday: string }, b: { birthday: string }) => {

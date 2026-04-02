@@ -117,6 +117,7 @@ export interface LeaveEmployee {
   user_no: number;
   name: string;       // 예: "Diane(허다인)"
   koreanName: string; // 예: "허다인"
+  birthday?: string;  // YYYY-MM-DD (API 응답에 있을 경우)
 }
 
 /**
@@ -142,11 +143,13 @@ export async function fetchLeaveEmployees(accessToken: string): Promise<LeaveEmp
     // "Diane(허다인)" → "허다인" 추출
     const match = name.match(/\(([^)]+)\)/);
     const koreanName = match ? match[1] : name;
-    
+    const birthday = emp.birthday || emp.birth_date || emp.birth_day || undefined;
+
     uniqueMap.set(userNo, {
       user_no: userNo,
       name,
       koreanName,
+      birthday,
     });
   });
 
