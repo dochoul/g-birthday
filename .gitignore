@@ -1,15 +1,11 @@
 node_modules/
 dist/
+dist-electron/
 *.db
 .env
 .env.local
 .omc/
 .DS_Store
-server/data/
-dist-electron/
-electron/
-
-# 개인정보 포함 파일 - 절대 커밋 금지
-*.xlsx
-!sample_birthday.xlsx
-gabia_birthday*
+server/data/gabia_birthday.xlsx
+server/data/backups/
+client/gabia_birthday.xlsx
