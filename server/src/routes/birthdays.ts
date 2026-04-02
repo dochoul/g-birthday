@@ -57,11 +57,10 @@ router.get('/', async (req: Request, res: Response) => {
     let leaveNames: Set<string> = new Set();
     try {
       const leaveEmployees = await fetchLeaveEmployees(session.accessToken);
-      leaveNames = new Set(leaveEmployees.map(e => e.koreanName));
+      leaveNames = new Set(leaveEmployees.map((e) => e.koreanName));
       console.log('[휴직원 목록]', [...leaveNames]);
     } catch (err: any) {
       console.warn('[휴직원 조회 실패]', err.message);
-      // 휴직원 조회 실패해도 생일자 목록은 반환
     }
 
     // 생일자에 휴직 여부 추가 (HR API 휴직원이면 status도 '휴직중'으로 변경)
@@ -94,15 +93,14 @@ router.get('/stats', async (req: Request, res: Response) => {
 
   try {
     // HR API에서 휴직원 목록 조회
-    let leaveNames: Set<string> = new Set();
+    let leaveEmployees: Awaited<ReturnType<typeof fetchLeaveEmployees>> = [];
     try {
-      const leaveEmployees = await fetchLeaveEmployees(session.accessToken);
-      leaveNames = new Set(leaveEmployees.map(e => e.koreanName));
+      leaveEmployees = await fetchLeaveEmployees(session.accessToken);
     } catch (err: any) {
       console.warn('[stats 휴직원 조회 실패]', err.message);
     }
 
-    const stats = fetchMonthlyStats(leaveNames);
+    const stats = fetchMonthlyStats(leaveEmployees);
     res.json({ data: stats });
   } catch (error: any) {
     console.error('Failed to read birthday stats:', error.message);
@@ -122,15 +120,14 @@ router.get('/summary', async (req: Request, res: Response) => {
 
   try {
     // HR API에서 휴직원 목록 조회
-    let leaveNames: Set<string> = new Set();
+    let leaveEmployees: Awaited<ReturnType<typeof fetchLeaveEmployees>> = [];
     try {
-      const leaveEmployees = await fetchLeaveEmployees(session.accessToken);
-      leaveNames = new Set(leaveEmployees.map(e => e.koreanName));
+      leaveEmployees = await fetchLeaveEmployees(session.accessToken);
     } catch (err: any) {
       console.warn('[summary 휴직원 조회 실패]', err.message);
     }
 
-    const summary = fetchEmployeeSummary(leaveNames);
+    const summary = fetchEmployeeSummary(leaveEmployees);
     res.json({ data: summary });
   } catch (error: any) {
     console.error('Failed to read employee summary:', error.message);
@@ -160,7 +157,7 @@ router.get('/export', async (req: Request, res: Response) => {
     let leaveNames: Set<string> = new Set();
     try {
       const leaveEmployees = await fetchLeaveEmployees(session.accessToken);
-      leaveNames = new Set(leaveEmployees.map(e => e.koreanName));
+      leaveNames = new Set(leaveEmployees.map((e) => e.koreanName));
     } catch (err: any) {
       console.warn('[export 휴직원 조회 실패]', err.message);
     }
