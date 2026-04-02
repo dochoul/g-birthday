@@ -39,10 +39,27 @@ export interface MonthlyStat {
   재직중: number;
   수습: number;
   휴직중: number;
+  퇴직예정: number;
 }
 
 export async function getBirthdayStats(): Promise<MonthlyStat[]> {
   const { data } = await api.get<{ data: MonthlyStat[] }>('/birthdays/stats');
+  return data.data;
+}
+
+export interface EmployeeSummary {
+  total: number;
+  재직중: number;
+  수습: number;
+  휴직중: number;
+  퇴직예정: number;
+  수습명단: { name: string; birthday: string }[];
+  휴직명단: { name: string; birthday: string }[];
+  퇴직예정명단: { name: string; birthday: string }[];
+}
+
+export async function getEmployeeSummary(): Promise<EmployeeSummary> {
+  const { data } = await api.get<{ data: EmployeeSummary }>('/birthdays/summary');
   return data.data;
 }
 

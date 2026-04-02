@@ -112,3 +112,43 @@ export async function fetchBirthdayEmployees(accessToken: string, month: number)
 
   return birthdayUsers;
 }
+
+export interface LeaveEmployee {
+  user_no: number;
+  name: string;       // 예: "Diane(허다인)"
+  koreanName: string; // 예: "허다인"
+}
+
+/**
+ * HR API에서 휴직원 목록을 조회한다.
+ * name에서 한글 이름을 추출하여 koreanName 필드에 저장한다.
+ * 동일인이 여러 휴직(출산휴가+육아휴직 등)으로 중복 등록된 경우 한 번만 반환한다.
+ */
+export async function fetchLeaveEmployees(accessToken: string): Promise<LeaveEmployee[]> {
+  const hrApiUrl = new URL(process.env.HIWORKS_HR_API_URL!);
+  const result = await httpsGet(hrApiUrl.hostname, '/v1/leave-employees', accessToken);
+  
+  const data = result.data ?? result;
+  if (!Array.isArray(data)) return [];
+
+  // 중복 제거를 위한 Map (user_no 기준)
+  const uniqueMap = new Map<number, LeaveEmployee>();
+
+  data.forEach((emp: any) => {
+    const userNo = emp.user_no || 0;
+    if (uniqueMap.has(userNo)) return; // 이미 추가된 사람은 스킵
+
+    const name = emp.name || '';
+    // "Diane(허다인)" → "허다인" 추출
+    const match = name.match(/\(([^)]+)\)/);
+    const koreanName = match ? match[1] : name;
+    
+    uniqueMap.set(userNo, {
+      user_no: userNo,
+      name,
+      koreanName,
+    });
+  });
+
+  return [...uniqueMap.values()];
+}

@@ -5,3 +5,10 @@ dist/
 .env.local
 .omc/
 .DS_Store
+server/data/
+dist-electron/
+electron/
+
+# 개인정보 포함 파일 - 절대 커밋 금지
+*.xlsx
+gabia_birthday*
