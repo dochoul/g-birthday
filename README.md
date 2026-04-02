@@ -47,7 +47,7 @@
 | **백엔드** | Express 4, TypeScript, ExcelJS, xlsx |
 | **인증** | Hiworks OAuth 2.0 PKCE |
 | **데이터** | 엑셀 명부 + HR API 휴직원 연동 |
-| **데스크톱** | Electron (선택적 빌드) |
+| **데스크톱** | Electron + electron-builder |
 
 ---
 
@@ -219,9 +219,57 @@ npm run dev
 | `npm run dev:client` | 프론트엔드만 실행 |
 | `npm run dev:server` | 백엔드만 실행 |
 | `npm run build` | 프로덕션 빌드 |
-| `npm run build:electron` | Electron 빌드 준비 |
-| `npm run package:mac` | macOS DMG 패키징 |
-| `npm run package:win` | Windows 설치파일 패키징 |
+| `npm run dist:mac` | macOS DMG 빌드 (arm64 + x64) |
+| `npm run dist:win` | Windows 설치파일 빌드 |
+| `npm run dist:all` | Mac + Windows 동시 빌드 |
+
+---
+
+## 데스크톱 앱 배포
+
+### 왜 데스크톱 앱인가?
+
+이 앱은 **주민등록번호가 포함된 엑셀 명부**를 다루므로 개인정보 보호가 중요합니다.
+
+- 웹 서버에 배포하면 네트워크를 통해 개인정보가 전송됨
+- 데스크톱 앱은 **로컬에서만 실행**되어 데이터가 외부로 유출되지 않음
+- **특정 담당자만** 앱을 설치하여 사용 (접근 통제)
+- 엑셀 파일은 사용자 PC에만 저장됨
+
+### 빌드된 파일
+
+| 플랫폼 | 파일 | 대상 |
+|--------|------|------|
+| Mac (Apple Silicon) | `Gabia Birthday-1.0.0-arm64.dmg` | M1/M2/M3/M4 Mac |
+| Mac (Intel) | `Gabia Birthday-1.0.0.dmg` | Intel Mac |
+| Windows | `Gabia Birthday Setup 1.0.0.exe` | Windows PC |
+
+빌드된 파일은 `dist-electron/` 폴더에 생성됩니다.
+
+### 빌드 방법
+
+```bash
+# Mac + Windows 동시 빌드
+npm run dist:all
+
+# Mac만 빌드
+npm run dist:mac
+
+# Windows만 빌드
+npm run dist:win
+```
+
+### 설치 및 실행
+
+**Mac:**
+1. DMG 파일 더블클릭
+2. `Gabia Birthday.app`을 Applications 폴더로 드래그
+3. Applications에서 앱 실행
+
+**Windows:**
+1. EXE 파일 더블클릭
+2. 설치 마법사 진행
+3. 시작 메뉴 또는 바탕화면에서 앱 실행
 
 ---
 
