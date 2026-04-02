@@ -48,6 +48,10 @@
         "to": "server/public"
       },
       {
+        "from": "server/data/sample_birthday.xlsx",
+        "to": "server/data/sample_birthday.xlsx"
+      },
+      {
         "from": "server/.env",
         "to": "server/.env",
         "filter": [

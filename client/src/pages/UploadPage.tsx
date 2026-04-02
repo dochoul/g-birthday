@@ -133,6 +133,15 @@ export default function UploadPage() {
             <List.Item>상태 (재직중 / 휴직중)</List.Item>
             <List.Item>고용형태 (정규직 / 수습 등)</List.Item>
           </List>
+          <Button
+            variant="subtle"
+            size="xs"
+            mt="md"
+            leftSection={<span>📄</span>}
+            onClick={() => window.open('/api/upload/sample', '_blank')}
+          >
+            샘플 파일 다운로드
+          </Button>
         </Card>
       </Card>
 
