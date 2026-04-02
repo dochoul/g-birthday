@@ -69,8 +69,9 @@ export default function BirthdayListPage() {
               {employees.map((emp, idx) => {
                 const isSuseup = emp.employmentType === '수습';
                 const isHujik = emp.status === '휴직중';
-                const isDisabled = isSuseup || isHujik;
-                const icon = isHujik ? '🏠' : isSuseup ? '🌱' : '🎂';
+                const isRetiring = emp.status === '퇴직예정자';
+                const isDisabled = isSuseup || isHujik || isRetiring;
+                const icon = isHujik ? '⛱️' : isRetiring ? '🔥' : isSuseup ? '🌱' : '🎂';
                 return (
                   <Table.Tr key={idx} style={isDisabled ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}>
                     <Table.Td>{idx + 1}</Table.Td>
