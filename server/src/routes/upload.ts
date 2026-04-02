@@ -7,9 +7,21 @@ import { getSessionFromCookie } from './auth';
 
 const router = Router();
 
-const EXCEL_PATH = path.join(__dirname, '../../data/gabia_birthday.xlsx');
-const BACKUP_DIR = path.join(__dirname, '../../data/backups');
-const HISTORY_PATH = path.join(__dirname, '../../data/upload_history.json');
+// DATA_DIR: Electron에서는 userData, 개발 시에는 server/data
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../../data');
+const EXCEL_PATH = path.join(DATA_DIR, 'gabia_birthday.xlsx');
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
+const HISTORY_PATH = path.join(DATA_DIR, 'upload_history.json');
+
+// 샘플 파일: Electron 패키징 시 extraResources에 포함됨
+function getSamplePath(): string {
+  // Electron 패키징 환경
+  if (process.env.NODE_ENV === 'production' && (process as any).resourcesPath) {
+    return path.join((process as any).resourcesPath, 'server/data/sample_birthday.xlsx');
+  }
+  // 개발 환경
+  return path.join(__dirname, '../../data/sample_birthday.xlsx');
+}
 
 interface UploadHistoryEntry {
   timestamp: string;
@@ -123,6 +135,21 @@ router.get('/history', (req: Request, res: Response) => {
     return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
   res.json({ data: readHistory() });
+});
+
+/**
+ * GET /api/upload/sample
+ * 샘플 엑셀 파일을 다운로드한다.
+ */
+router.get('/sample', (req: Request, res: Response) => {
+  const samplePath = getSamplePath();
+  if (!fs.existsSync(samplePath)) {
+    return res.status(404).json({ error: '샘플 파일이 없습니다.' });
+  }
+  
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename="sample_birthday.xlsx"');
+  res.sendFile(samplePath);
 });
 
 export default router;
