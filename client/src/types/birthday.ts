@@ -13,6 +13,7 @@ export interface BirthdayEmployee {
   birthday: string;
   email: string;
   status: string;
+  employmentType: string;
 }
 
 export interface BirthdayResponse {

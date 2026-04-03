@@ -134,6 +134,7 @@ export default function UploadPage() {
             <List.Item>주민등록번호 <Text span size="xs" c="red">(업로드 즉시 삭제, 생일만 보관)</Text></List.Item>
             <List.Item>이메일</List.Item>
             <List.Item>상태 (재직중 / 휴직중)</List.Item>
+            <List.Item>고용형태 (정규직 / 정규직-수습 / 인턴)</List.Item>
           </List>
           <Button
             variant="subtle"

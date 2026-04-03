@@ -9,6 +9,7 @@ export interface BirthdayEmployee {
   birthday: string; // YYYY-MM-DD
   email: string;
   status: string;
+  employmentType: string;
 }
 
 /**
@@ -40,6 +41,7 @@ type ExcelRow = {
   주민등록번호?: string;
   이메일: string;
   상태: string;
+  고용형태?: string;
 };
 
 function readExcelRows(filePath: string): ExcelRow[] {
@@ -170,6 +172,7 @@ export function fetchBirthdayEmployeesFromExcel(month: number): BirthdayEmployee
       birthday: getBirthday(row),
       email: row.이메일 || '',
       status: row.상태 || '',
+      employmentType: row.고용형태 || '',
     }))
     .filter((emp): emp is BirthdayEmployee => {
       if (!emp.birthday) return false;

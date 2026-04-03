@@ -98,10 +98,11 @@ router.get('/export', async (req: Request, res: Response) => {
       { key: 'team', width: 16 },
       { key: 'unit', width: 16 },
       { key: 'birthday', width: 12 },
+      { key: 'employmentType', width: 14 },
     ];
 
     const year = new Date().getFullYear();
-    ws.mergeCells('A1:E1');
+    ws.mergeCells('A1:F1');
     const titleCell = ws.getCell('A1');
     titleCell.value = `${year}년 ${month}월 생일자 명단`;
     titleCell.font = { bold: true, size: 16 };
@@ -110,7 +111,7 @@ router.get('/export', async (req: Request, res: Response) => {
 
     ws.addRow([]);
 
-    const headerRow = ws.addRow(['번호', '이름', '팀', '유닛', '생일']);
+    const headerRow = ws.addRow(['번호', '이름', '팀', '유닛', '생일', '고용형태']);
     headerRow.height = 28;
     headerRow.eachCell((cell) => {
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
@@ -128,7 +129,7 @@ router.get('/export', async (req: Request, res: Response) => {
       const [, mm, dd] = emp.birthday.split('-');
       const birthday = `${parseInt(mm)}월 ${parseInt(dd)}일`;
       const [team = '', unit = ''] = emp.department.split('>').map((s) => s.trim());
-      const row = ws.addRow({ no: idx + 1, name: emp.name, team, unit, birthday });
+      const row = ws.addRow({ no: idx + 1, name: emp.name, team, unit, birthday, employmentType: emp.employmentType });
       row.eachCell((cell) => {
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
         cell.border = {

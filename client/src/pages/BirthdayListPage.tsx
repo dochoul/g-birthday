@@ -65,6 +65,7 @@ export default function BirthdayListPage() {
                 <Table.Th ta="center">이메일</Table.Th>
                 <Table.Th ta="center">소속</Table.Th>
                 <Table.Th ta="center">사번</Table.Th>
+                <Table.Th ta="center">고용형태</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -81,6 +82,7 @@ export default function BirthdayListPage() {
                     <Table.Td ta="center">{emp.email}</Table.Td>
                     <Table.Td ta="center">{emp.department}</Table.Td>
                     <Table.Td ta="center">{emp.employeeId}</Table.Td>
+                    <Table.Td ta="center">{emp.employmentType}</Table.Td>
                   </Table.Tr>
                 );
               })}
