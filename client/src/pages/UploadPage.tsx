@@ -41,6 +41,7 @@ export default function UploadPage() {
       setStatus({ type: 'success', message: `업로드 완료! 총 ${data.count}명의 데이터가 반영되었습니다.` });
       queryClient.invalidateQueries({ queryKey: ['birthdays'] });
       queryClient.invalidateQueries({ queryKey: ['birthdayStats'] });
+      queryClient.invalidateQueries({ queryKey: ['employeeSummary'] });
       refetchHistory();
     } catch (err: any) {
       const message = err.response?.data?.error || '업로드 중 오류가 발생했습니다.';
