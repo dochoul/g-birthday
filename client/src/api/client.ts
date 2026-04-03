@@ -52,6 +52,9 @@ export interface EmployeeSummary {
   재직중: number;
   휴직중: number;
   휴직명단: { name: string; birthday: string }[];
+  정규직명단: { name: string; birthday: string }[];
+  정규직수습명단: { name: string; birthday: string }[];
+  인턴명단: { name: string; birthday: string }[];
 }
 
 export async function getEmployeeSummary(): Promise<EmployeeSummary> {

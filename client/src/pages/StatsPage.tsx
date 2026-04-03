@@ -61,48 +61,55 @@ export default function StatsPage() {
         <StatCard label="휴직중" value={totalHujik} color="gray" icon="🌙" />
       </SimpleGrid>
 
-      <SimpleGrid cols={1} mb="lg">
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Group mb="md">
-            <ThemeIcon size={32} radius="md" color="gray" variant="light">
-              <span style={{ fontSize: 18 }}>🌙</span>
-            </ThemeIcon>
-            <div>
-              <Text fw={700} size="md">휴직중 직원</Text>
-              <Text size="xs" c="dimmed">{summary?.휴직명단?.length ?? 0}명</Text>
-            </div>
-          </Group>
-          {summaryLoading ? (
-            <Center py="md"><Loader size="sm" /></Center>
-          ) : !summary?.휴직명단?.length ? (
-            <Text c="dimmed" size="sm" ta="center" py="md">휴직중인 직원이 없습니다</Text>
-          ) : (
-            <Table striped highlightOnHover>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>이름</Table.Th>
-                  <Table.Th>생일</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {summary.휴직명단.map((emp, idx) => {
-                  const [, mm, dd] = emp.birthday.split('-');
-                  return (
-                    <Table.Tr key={idx}>
-                      <Table.Td>
-                        <Group gap="xs">
-                          {emp.name}
-                          <Badge size="xs" color="gray" variant="light">휴직</Badge>
-                        </Group>
-                      </Table.Td>
-                      <Table.Td>{parseInt(mm)}월 {parseInt(dd)}일</Table.Td>
-                    </Table.Tr>
-                  );
-                })}
-              </Table.Tbody>
-            </Table>
-          )}
-        </Card>
+      <SimpleGrid cols={2} mb="lg">
+        {[
+          { key: '정규직명단' as const, label: '정규직', icon: '💼', color: 'teal' },
+          { key: '정규직수습명단' as const, label: '정규직-수습', icon: '📋', color: 'orange' },
+          { key: '인턴명단' as const, label: '인턴', icon: '🎓', color: 'violet' },
+          { key: '휴직명단' as const, label: '휴직중', icon: '🌙', color: 'gray' },
+        ].map(({ key, label, icon, color }) => (
+          <Card key={key} shadow="sm" padding="lg" radius="md" withBorder>
+            <Group mb="md">
+              <ThemeIcon size={32} radius="md" color={color} variant="light">
+                <span style={{ fontSize: 18 }}>{icon}</span>
+              </ThemeIcon>
+              <div>
+                <Text fw={700} size="md">{label}</Text>
+                <Text size="xs" c="dimmed">{summary?.[key]?.length ?? 0}명</Text>
+              </div>
+            </Group>
+            {summaryLoading ? (
+              <Center py="md"><Loader size="sm" /></Center>
+            ) : !summary?.[key]?.length ? (
+              <Text c="dimmed" size="sm" ta="center" py="md">해당 직원이 없습니다</Text>
+            ) : (
+              <Table striped highlightOnHover>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>이름</Table.Th>
+                    <Table.Th>생일</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {summary[key].map((emp, idx) => {
+                    const [, mm, dd] = emp.birthday.split('-');
+                    return (
+                      <Table.Tr key={idx}>
+                        <Table.Td>
+                          <Group gap="xs">
+                            {emp.name}
+                            <Badge size="xs" color={color} variant="light">{label}</Badge>
+                          </Group>
+                        </Table.Td>
+                        <Table.Td>{parseInt(mm)}월 {parseInt(dd)}일</Table.Td>
+                      </Table.Tr>
+                    );
+                  })}
+                </Table.Tbody>
+              </Table>
+            )}
+          </Card>
+        ))}
       </SimpleGrid>
 
       <Card shadow="sm" padding="xl" radius="md" withBorder>

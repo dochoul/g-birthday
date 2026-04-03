@@ -73,13 +73,17 @@ export interface MonthlyStat {
 }
 
 /**
- * 전체 직원 요약 통계 (휴직중 명단 포함)
+ * 전체 직원 요약 통계 (고용형태별 명단 포함)
  */
+type EmployeeEntry = { name: string; birthday: string };
 export interface EmployeeSummary {
   total: number;
   재직중: number;
   휴직중: number;
-  휴직명단: { name: string; birthday: string }[];
+  휴직명단: EmployeeEntry[];
+  정규직명단: EmployeeEntry[];
+  정규직수습명단: EmployeeEntry[];
+  인턴명단: EmployeeEntry[];
 }
 
 export function fetchMonthlyStats(): MonthlyStat[] {
@@ -129,6 +133,9 @@ export function fetchEmployeeSummary(): EmployeeSummary {
     재직중: 0,
     휴직중: 0,
     휴직명단: [],
+    정규직명단: [],
+    정규직수습명단: [],
+    인턴명단: [],
   };
 
   const processedNames = new Set<string>();
@@ -149,6 +156,13 @@ export function fetchEmployeeSummary(): EmployeeSummary {
       summary.휴직명단.push({ name, birthday });
     } else {
       summary.재직중++;
+      if (row.고용형태 === '정규직-수습') {
+        summary.정규직수습명단.push({ name, birthday });
+      } else if (row.고용형태 === '인턴') {
+        summary.인턴명단.push({ name, birthday });
+      } else {
+        summary.정규직명단.push({ name, birthday });
+      }
     }
   });
 
@@ -158,6 +172,9 @@ export function fetchEmployeeSummary(): EmployeeSummary {
     return am !== bm ? am - bm : ad - bd;
   };
   summary.휴직명단.sort(sortByBirthday);
+  summary.정규직명단.sort(sortByBirthday);
+  summary.정규직수습명단.sort(sortByBirthday);
+  summary.인턴명단.sort(sortByBirthday);
 
   return summary;
 }
