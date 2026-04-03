@@ -37,9 +37,7 @@ export async function getBirthdays(month: number): Promise<BirthdayResponse> {
 export interface MonthlyStat {
   month: number;
   재직중: number;
-  수습: number;
   휴직중: number;
-  퇴직예정: number;
 }
 
 export async function getBirthdayStats(): Promise<MonthlyStat[]> {
@@ -50,12 +48,8 @@ export async function getBirthdayStats(): Promise<MonthlyStat[]> {
 export interface EmployeeSummary {
   total: number;
   재직중: number;
-  수습: number;
   휴직중: number;
-  퇴직예정: number;
-  수습명단: { name: string; birthday: string }[];
   휴직명단: { name: string; birthday: string }[];
-  퇴직예정명단: { name: string; birthday: string }[];
 }
 
 export async function getEmployeeSummary(): Promise<EmployeeSummary> {

@@ -8,8 +8,10 @@ export interface AccountMeInfo {
 
 export interface BirthdayEmployee {
   name: string;
+  employeeId: string;
+  department: string;
   birthday: string;
-  employmentType: string;
+  email: string;
   status: string;
 }
 

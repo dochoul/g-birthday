@@ -17,6 +17,7 @@
     "electron:dev": "npm run build:electron && electron .",
     "dist:mac": "npm run build:electron && electron-builder --mac",
     "dist:win": "npm run build:electron && electron-builder --win",
+    "dist:win:portable": "npm run build:electron && electron-builder --win portable --x64",
     "dist:all": "npm run build:electron && electron-builder --mac --win"
   },
   "devDependencies": {
@@ -76,8 +77,7 @@
         {
           "target": "dmg",
           "arch": [
-            "arm64",
-            "x64"
+            "arm64"
           ]
         }
       ],
@@ -100,7 +100,8 @@
       "installerLanguages": [
         "ko",
         "en"
-      ]
+      ],
+      "guid": "CB6163F2-EBB6-4B7A-ADF6-2EAFA9CF4D4D"
     }
   }
 }
