@@ -61,9 +61,8 @@ export default function StatsPage() {
         <StatCard label="휴직중" value={totalHujik} color="gray" icon="🌙" />
       </SimpleGrid>
 
-      <SimpleGrid cols={2} mb="lg">
+      <SimpleGrid cols={3} mb="lg">
         {[
-          { key: '정규직명단' as const, label: '정규직', icon: '💼', color: 'teal' },
           { key: '정규직수습명단' as const, label: '정규직-수습', icon: '📋', color: 'orange' },
           { key: '인턴명단' as const, label: '인턴', icon: '🎓', color: 'violet' },
           { key: '휴직명단' as const, label: '휴직중', icon: '🌙', color: 'gray' },
