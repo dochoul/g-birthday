@@ -36,7 +36,9 @@ export async function getBirthdays(month: number): Promise<BirthdayResponse> {
 
 export interface MonthlyStat {
   month: number;
-  재직중: number;
+  정규직: number;
+  정규직수습: number;
+  인턴: number;
   휴직중: number;
 }
 
@@ -50,6 +52,9 @@ export interface EmployeeSummary {
   재직중: number;
   휴직중: number;
   휴직명단: { name: string; birthday: string }[];
+  정규직명단: { name: string; birthday: string }[];
+  정규직수습명단: { name: string; birthday: string }[];
+  인턴명단: { name: string; birthday: string }[];
 }
 
 export async function getEmployeeSummary(): Promise<EmployeeSummary> {
@@ -59,10 +64,11 @@ export async function getEmployeeSummary(): Promise<EmployeeSummary> {
 
 export interface UploadHistoryEntry {
   timestamp: string;
-  uploaderName: string;
-  uploaderId: string;
-  count: number;
   fileName: string;
+  count: number;
+  정규직?: number;
+  정규직수습?: number;
+  인턴?: number;
 }
 
 export async function getUploadHistory(): Promise<UploadHistoryEntry[]> {

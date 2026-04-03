@@ -160,9 +160,11 @@ export default function UploadPage() {
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>업로드 일시</Table.Th>
-                <Table.Th>업로드한 사람</Table.Th>
                 <Table.Th>파일명</Table.Th>
-                <Table.Th style={{ textAlign: 'center' }}>인원 수</Table.Th>
+                <Table.Th ta="center">전체</Table.Th>
+                <Table.Th ta="center">정규직</Table.Th>
+                <Table.Th ta="center">정규직-수습</Table.Th>
+                <Table.Th ta="center">인턴</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -174,11 +176,11 @@ export default function UploadPage() {
                       hour: '2-digit', minute: '2-digit',
                     })}
                   </Table.Td>
-                  <Table.Td fw={500}>{entry.uploaderName}</Table.Td>
                   <Table.Td c="dimmed" style={{ fontSize: '0.8rem' }}>{entry.fileName}</Table.Td>
-                  <Table.Td style={{ textAlign: 'center' }}>
-                    <Badge color="blue" variant="light">{entry.count.toLocaleString()}명</Badge>
-                  </Table.Td>
+                  <Table.Td ta="center"><Badge color="blue" variant="light">{entry.count.toLocaleString()}명</Badge></Table.Td>
+                  <Table.Td ta="center"><Badge color="green" variant="light">{entry.정규직 ?? '-'}명</Badge></Table.Td>
+                  <Table.Td ta="center"><Badge color="yellow" variant="light">{entry.정규직수습 ?? '-'}명</Badge></Table.Td>
+                  <Table.Td ta="center"><Badge color="gray" variant="light">{entry.인턴 ?? '-'}명</Badge></Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>

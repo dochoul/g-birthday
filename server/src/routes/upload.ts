@@ -26,10 +26,11 @@ function getSamplePath(): string {
 
 interface UploadHistoryEntry {
   timestamp: string;
-  uploaderName: string;
-  uploaderId: string;
-  count: number;
   fileName: string;
+  count: number;
+  정규직: number;
+  정규직수습: number;
+  인턴: number;
 }
 
 function readHistory(): UploadHistoryEntry[] {
@@ -119,15 +120,20 @@ router.post('/excel', upload.single('file'), (req: Request, res: Response) => {
     // 새 파일 저장 (주민등록번호 제거된 버전)
     fs.writeFileSync(EXCEL_PATH, sanitizedBuffer);
 
+    const 정규직 = rows.filter((r) => r['고용형태'] === '정규직').length;
+    const 정규직수습 = rows.filter((r) => r['고용형태'] === '정규직-수습').length;
+    const 인턴 = rows.filter((r) => r['고용형태'] === '인턴').length;
+
     appendHistory({
       timestamp: new Date().toISOString(),
-      uploaderName: session.userInfo.name,
-      uploaderId: String(session.userInfo.user_id),
-      count: rows.length,
       fileName: Buffer.from(req.file.originalname, 'latin1').toString('utf8'),
+      count: rows.length,
+      정규직,
+      정규직수습,
+      인턴,
     });
 
-    console.log(`[Upload] ${session.userInfo.name}(${session.userInfo.user_id})이 엑셀 파일을 업로드했습니다. (${rows.length}명)`);
+    console.log(`[Upload] 엑셀 파일 업로드 완료. (총 ${rows.length}명 / 정규직 ${정규직}, 정규직-수습 ${정규직수습}, 인턴 ${인턴})`);
     res.json({ message: '업로드 완료', count: rows.length });
   } catch (error: any) {
     console.error('Excel upload failed:', error.message);
