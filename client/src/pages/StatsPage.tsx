@@ -155,7 +155,7 @@ export default function StatsPage() {
             tickLine="none"
             gridAxis="y"
             withLegend={false}
-            barProps={{ radius: [4, 4, 0, 0] }}
+            barProps={{ radius: 0 }}
             styles={{
               axis: { fontSize: 13 },
             }}
