@@ -56,10 +56,23 @@ function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
+const GUEST_SESSION: Session = {
+  accessToken: '',
+  refreshToken: '',
+  userInfo: {
+    user_id: 'local',
+    name: '로컬 사용자',
+    address: '',
+    cell: '',
+    nodes: [],
+  },
+  expiresAt: Infinity,
+};
+
 export function getSessionFromCookie(req: Request): Session | null {
   const sid = req.cookies?.birthday_sid;
-  if (!sid) return null;
-  return sessions.get(sid) ?? null;
+  if (!sid) return GUEST_SESSION;
+  return sessions.get(sid) ?? GUEST_SESSION;
 }
 
 // --- 라우트 ---

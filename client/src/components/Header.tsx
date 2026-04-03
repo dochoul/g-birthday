@@ -1,8 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Group, Button } from '@mantine/core';
+import { Group } from '@mantine/core';
 import logoGabia from '../assets/logo-gabia.svg';
 import classes from './Header.module.css';
-import { useAuth } from '../contexts/AuthContext';
 
 const links = [
   { link: '/', label: '🎂 생일자 목록' },
@@ -11,7 +10,6 @@ const links = [
 ];
 
 export default function Header() {
-  const { accountInfo, logout } = useAuth();
   const { pathname } = useLocation();
 
   return (
@@ -22,7 +20,7 @@ export default function Header() {
           🎉 생일자 관리
         </Link>
         <Group gap={5}>
-          {accountInfo && links.map((item) => (
+          {links.map((item) => (
             <Link
               key={item.link}
               to={item.link}
@@ -31,11 +29,6 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          {accountInfo && (
-            <Button variant="subtle" size="compact-sm" onClick={logout}>
-              {accountInfo.name} 로그아웃
-            </Button>
-          )}
         </Group>
       </div>
     </header>
