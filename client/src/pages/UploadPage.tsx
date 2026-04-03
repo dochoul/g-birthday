@@ -141,7 +141,17 @@ export default function UploadPage() {
             size="xs"
             mt="md"
             leftSection={<span>📄</span>}
-            onClick={() => window.open('/api/upload/sample', '_blank')}
+            onClick={async () => {
+              const res = await axios.get('/api/upload/sample', { responseType: 'blob', withCredentials: true });
+              const url = window.URL.createObjectURL(new Blob([res.data]));
+              const a = document.createElement('a');
+              a.href = url;
+              a.setAttribute('download', 'sample_birthday.xlsx');
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(url);
+            }}
           >
             샘플 파일 다운로드
           </Button>
