@@ -36,7 +36,9 @@ export async function getBirthdays(month: number): Promise<BirthdayResponse> {
 
 export interface MonthlyStat {
   month: number;
-  재직중: number;
+  정규직: number;
+  정규직수습: number;
+  인턴: number;
   휴직중: number;
 }
 

@@ -33,22 +33,31 @@ export default function StatsPage() {
 
   const chartData = stats?.map((s) => ({
     month: `${s.month}월`,
-    재직중: s.재직중,
+    정규직: s.정규직,
+    '정규직-수습': s.정규직수습,
+    인턴: s.인턴,
     휴직중: s.휴직중,
   })) ?? [];
 
-  const total = stats?.reduce((sum, s) => sum + s.재직중 + s.휴직중, 0) ?? 0;
+  const total = stats?.reduce((sum, s) => sum + s.정규직 + s.정규직수습 + s.인턴 + s.휴직중, 0) ?? 0;
   const totalHujik = stats?.reduce((sum, s) => sum + s.휴직중, 0) ?? 0;
+  const total정규직 = stats?.reduce((sum, s) => sum + s.정규직, 0) ?? 0;
+  const total정규직수습 = stats?.reduce((sum, s) => sum + s.정규직수습, 0) ?? 0;
+  const total인턴 = stats?.reduce((sum, s) => sum + s.인턴, 0) ?? 0;
 
   const maxEntry = stats?.reduce((max, s) => {
-    return (s.재직중 + s.휴직중) > (max.재직중 + max.휴직중) ? s : max;
-  }, { month: 0, 재직중: 0, 휴직중: 0 });
+    const total = s.정규직 + s.정규직수습 + s.인턴 + s.휴직중;
+    const maxTotal = max.정규직 + max.정규직수습 + max.인턴 + max.휴직중;
+    return total > maxTotal ? s : max;
+  }, { month: 0, 정규직: 0, 정규직수습: 0, 인턴: 0, 휴직중: 0 });
 
   return (
     <div className="page-container">
-      <SimpleGrid cols={3} mb="lg">
+      <SimpleGrid cols={5} mb="lg">
         <StatCard label="전체 생일자" value={total} color="blue" icon="🎂" />
-        <StatCard label="재직중" value={total - totalHujik} color="teal" icon="💼" />
+        <StatCard label="정규직" value={total정규직} color="teal" icon="💼" />
+        <StatCard label="정규직-수습" value={total정규직수습} color="orange" icon="📋" />
+        <StatCard label="인턴" value={total인턴} color="violet" icon="🎓" />
         <StatCard label="휴직중" value={totalHujik} color="gray" icon="🌙" />
       </SimpleGrid>
 
@@ -100,15 +109,17 @@ export default function StatsPage() {
         <Group justify="space-between" align="center" mb="xl">
           <div>
             <Text fw={700} size="lg">🎂 월별 생일자 현황</Text>
-            {maxEntry && (maxEntry.재직중 + maxEntry.휴직중) > 0 && (
+            {maxEntry && (maxEntry.정규직 + maxEntry.정규직수습 + maxEntry.인턴 + maxEntry.휴직중) > 0 && (
               <Text size="sm" c="dimmed">
-                가장 많은 달: {maxEntry.month}월 ({maxEntry.재직중 + maxEntry.휴직중}명)
+                가장 많은 달: {maxEntry.month}월 ({maxEntry.정규직 + maxEntry.정규직수습 + maxEntry.인턴 + maxEntry.휴직중}명)
               </Text>
             )}
           </div>
           <Group gap="lg">
             {[
-              { color: '#339af0', label: '재직중' },
+              { color: '#339af0', label: '정규직' },
+              { color: '#f76707', label: '정규직-수습' },
+              { color: '#7950f2', label: '인턴' },
               { color: '#adb5bd', label: '휴직중' },
             ].map(({ color, label }) => (
               <Group key={label} gap={6}>
@@ -130,7 +141,9 @@ export default function StatsPage() {
             dataKey="month"
             type="stacked"
             series={[
-              { name: '재직중', color: '#339af0' },
+              { name: '정규직', color: '#339af0' },
+              { name: '정규직-수습', color: '#f76707' },
+              { name: '인턴', color: '#7950f2' },
               { name: '휴직중', color: '#adb5bd' },
             ]}
             tickLine="none"

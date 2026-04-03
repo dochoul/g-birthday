@@ -66,7 +66,9 @@ function getDataDir() {
  */
 export interface MonthlyStat {
   month: number;
-  재직중: number;
+  정규직: number;
+  정규직수습: number;
+  인턴: number;
   휴직중: number;
 }
 
@@ -86,7 +88,9 @@ export function fetchMonthlyStats(): MonthlyStat[] {
 
   const stats: MonthlyStat[] = Array.from({ length: 12 }, (_, i) => ({
     month: i + 1,
-    재직중: 0,
+    정규직: 0,
+    정규직수습: 0,
+    인턴: 0,
     휴직중: 0,
   }));
 
@@ -104,8 +108,12 @@ export function fetchMonthlyStats(): MonthlyStat[] {
 
     if (row.상태 === '휴직중') {
       stats[monthIdx].휴직중++;
+    } else if (row.고용형태 === '정규직-수습') {
+      stats[monthIdx].정규직수습++;
+    } else if (row.고용형태 === '인턴') {
+      stats[monthIdx].인턴++;
     } else {
-      stats[monthIdx].재직중++;
+      stats[monthIdx].정규직++;
     }
   });
 
