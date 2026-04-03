@@ -83,7 +83,7 @@ router.post('/excel', upload.single('file'), (req: Request, res: Response) => {
       return res.status(400).json({ error: '엑셀 파일이 비어 있습니다.' });
     }
 
-    const requiredColumns = ['이름', '주민등록번호', '상태', '고용형태'];
+    const requiredColumns = ['이름(호칭)', '사번', '소속', '주민등록번호', '이메일', '상태'];
     const firstRow = rows[0];
     const missingColumns = requiredColumns.filter((col) => !(col in firstRow));
     if (missingColumns.length > 0) {

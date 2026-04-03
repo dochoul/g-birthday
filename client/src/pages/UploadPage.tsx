@@ -128,10 +128,12 @@ export default function UploadPage() {
         <Card padding="md" radius="md" bg="gray.0" withBorder>
           <Text size="sm" fw={600} mb="xs" c="dimmed">업로드 파일 필수 컬럼</Text>
           <List size="sm" c="dimmed" spacing={4}>
-            <List.Item>이름</List.Item>
+            <List.Item>이름(호칭)</List.Item>
+            <List.Item>사번</List.Item>
+            <List.Item>소속</List.Item>
             <List.Item>주민등록번호</List.Item>
+            <List.Item>이메일</List.Item>
             <List.Item>상태 (재직중 / 휴직중)</List.Item>
-            <List.Item>고용형태 (정규직 / 수습 등)</List.Item>
           </List>
           <Button
             variant="subtle"
