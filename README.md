@@ -30,6 +30,11 @@
 - 관리자가 엑셀 명부를 업로드하여 데이터 갱신
 - 업로드 이력 관리 (업로드자, 일시, 파일명)
 
+### 개인정보 보호
+- 업로드 즉시 주민등록번호 컬럼 제거 — 생일(YYYY-MM-DD)만 추출하여 저장
+- 기존 파일에 주민등록번호가 남아있으면 앱 시작 시 자동 마이그레이션
+- API 응답, 화면, 엑셀 내보내기 어디에도 주민등록번호 미포함
+
 ### 인증
 - Hiworks OAuth 2.0 PKCE 로그인
 - 사내 직원만 접근 가능
@@ -116,7 +121,7 @@ gabia-birthday/
 | 이름(호칭) | 국문(영문) 형식 | 허다인(Diane) |
 | 사번 | 직원 사번 | GW2301027 |
 | 소속 | 팀 > 유닛 형식 | 개발팀 > 플랫폼유닛 |
-| 주민등록번호 | 생년월일+성별 | 850312-1234567 |
+| 주민등록번호 | 생년월일+성별 (**업로드 즉시 삭제**) | 850312-1234567 |
 | 이메일 | 사내 이메일 | diane@gabia.com |
 | 상태 | 재직중/휴직중 | 재직중 |
 
@@ -208,8 +213,9 @@ npm run dev
 | `npm run dev:client` | 프론트엔드만 실행 |
 | `npm run dev:server` | 백엔드만 실행 |
 | `npm run build` | 프로덕션 빌드 |
-| `npm run dist:mac` | macOS DMG 빌드 (arm64 + x64) |
-| `npm run dist:win` | Windows 설치파일 빌드 |
+| `npm run dist:mac` | macOS DMG 빌드 (arm64) |
+| `npm run dist:win` | Windows 설치관리자 빌드 (NSIS, x64) |
+| `npm run dist:win:portable` | Windows Portable exe 빌드 (설치 불필요, x64) |
 | `npm run dist:all` | Mac + Windows 동시 빌드 |
 
 ---
@@ -227,11 +233,11 @@ npm run dev
 
 ### 빌드된 파일
 
-| 플랫폼 | 파일 | 대상 |
-|--------|------|------|
-| Mac (Apple Silicon) | `Gabia Birthday-1.0.0-arm64.dmg` | M1/M2/M3/M4 Mac |
-| Mac (Intel) | `Gabia Birthday-1.0.0.dmg` | Intel Mac |
-| Windows | `Gabia Birthday Setup 1.0.0.exe` | Windows PC |
+| 플랫폼 | 파일 | 대상 | 특이사항 |
+|--------|------|------|----------|
+| Mac (Apple Silicon) | `Gabia Birthday-x.x.x-arm64.dmg` | M1/M2/M3/M4 Mac | 드래그 설치 |
+| Windows 설치관리자 | `Gabia Birthday Setup x.x.x.exe` | Windows x64 | 제어판 등록, 업그레이드 시 자동 교체 |
+| Windows Portable | `Gabia Birthday x.x.x.exe` | Windows x64 | 설치 없이 바로 실행, 파일 교체로 업데이트 |
 
 빌드된 파일은 `dist-electron/` 폴더에 생성됩니다.
 
@@ -255,10 +261,16 @@ npm run dist:win
 2. `Gabia Birthday.app`을 Applications 폴더로 드래그
 3. Applications에서 앱 실행
 
-**Windows:**
-1. EXE 파일 더블클릭
+**Windows (설치관리자):**
+1. `Gabia Birthday Setup x.x.x.exe` 더블클릭
 2. 설치 마법사 진행
 3. 시작 메뉴 또는 바탕화면에서 앱 실행
+4. 버전 업데이트 시 새 Setup.exe를 실행하면 기존 버전이 자동으로 교체됨
+
+**Windows (Portable):**
+1. `Gabia Birthday x.x.x.exe` 더블클릭 → 바로 실행
+2. 설치 없음, 제어판 등록 없음
+3. 업데이트 시 새 exe 파일로 교체하면 됨
 
 ---
 

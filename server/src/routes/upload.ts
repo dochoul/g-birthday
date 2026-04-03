@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import * as XLSX from 'xlsx';
 import { getSessionFromCookie } from './auth';
+import { sanitizeExcelBuffer, sanitizeExcelFile } from '../utils/sanitizeExcel';
 
 const router = Router();
 
@@ -83,12 +84,20 @@ router.post('/excel', upload.single('file'), (req: Request, res: Response) => {
       return res.status(400).json({ error: '엑셀 파일이 비어 있습니다.' });
     }
 
-    const requiredColumns = ['이름(호칭)', '사번', '소속', '주민등록번호', '이메일', '상태'];
-    const firstRow = rows[0];
-    const missingColumns = requiredColumns.filter((col) => !(col in firstRow));
-    if (missingColumns.length > 0) {
-      return res.status(400).json({ error: `필수 컬럼이 없습니다: ${missingColumns.join(', ')}` });
+    const hasIdColumn = '주민등록번호' in rows[0];
+    const hasBirthdayColumn = '생일' in rows[0];
+    const requiredColumns = ['이름(호칭)', '사번', '소속', '이메일', '상태'];
+    const missingColumns = requiredColumns.filter((col) => !(col in rows[0]));
+    if (missingColumns.length > 0 || (!hasIdColumn && !hasBirthdayColumn)) {
+      const missing = [
+        ...missingColumns,
+        ...(!hasIdColumn && !hasBirthdayColumn ? ['주민등록번호 또는 생일'] : []),
+      ];
+      return res.status(400).json({ error: `필수 컬럼이 없습니다: ${missing.join(', ')}` });
     }
+
+    // 주민등록번호 즉시 제거: 생일만 추출하여 저장
+    const sanitizedBuffer = sanitizeExcelBuffer(req.file.buffer);
 
     // 기존 파일 백업
     if (fs.existsSync(EXCEL_PATH)) {
@@ -98,6 +107,7 @@ router.post('/excel', upload.single('file'), (req: Request, res: Response) => {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       const backupPath = path.join(BACKUP_DIR, `gabia_birthday_${timestamp}.xlsx`);
       fs.copyFileSync(EXCEL_PATH, backupPath);
+      sanitizeExcelFile(backupPath); // 백업 파일에도 주민등록번호 잔존 시 즉시 제거
 
       // 백업 파일 최대 10개 유지
       const backups = fs.readdirSync(BACKUP_DIR).sort();
@@ -106,8 +116,8 @@ router.post('/excel', upload.single('file'), (req: Request, res: Response) => {
       }
     }
 
-    // 새 파일 저장
-    fs.writeFileSync(EXCEL_PATH, req.file.buffer);
+    // 새 파일 저장 (주민등록번호 제거된 버전)
+    fs.writeFileSync(EXCEL_PATH, sanitizedBuffer);
 
     appendHistory({
       timestamp: new Date().toISOString(),

@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import path from 'path';
+import { extractBirthday } from '../utils/sanitizeExcel';
 
 export interface BirthdayEmployee {
   name: string;
@@ -31,40 +32,27 @@ function extractKoreanName(name: string): string {
   return name;
 }
 
-/**
- * 주민등록번호에서 생일(YYYY-MM-DD)을 추출한다.
- * 7자리 이상: 7번째 자리(1,2 → 1900년대 / 3,4 → 2000년대)로 세기 판별
- * 6자리: yy >= 50이면 1900년대, 미만이면 2000년대로 판별
- */
-function extractBirthday(idNumber: string): string | null {
-  const cleaned = idNumber.replace(/[-\s]/g, '');
-  if (cleaned.length < 6) return null;
+type ExcelRow = {
+  '이름(호칭)': string;
+  사번: string;
+  소속: string;
+  생일?: string;
+  주민등록번호?: string;
+  이메일: string;
+  상태: string;
+};
 
-  const yy = cleaned.slice(0, 2);
-  const mm = cleaned.slice(2, 4);
-  const dd = cleaned.slice(4, 6);
-
-  let century: string;
-  if (cleaned.length >= 7) {
-    const genderDigit = cleaned[6];
-    if (genderDigit === '1' || genderDigit === '2') {
-      century = '19';
-    } else if (genderDigit === '3' || genderDigit === '4') {
-      century = '20';
-    } else {
-      return null;
-    }
-  } else {
-    century = parseInt(yy) >= 50 ? '19' : '20';
-  }
-
-  return `${century}${yy}-${mm}-${dd}`;
-}
-
-function readExcelRows(filePath: string) {
+function readExcelRows(filePath: string): ExcelRow[] {
   const workbook = XLSX.readFile(filePath);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  return XLSX.utils.sheet_to_json<{ '이름(호칭)': string; 사번: string; 소속: string; 주민등록번호: string; 이메일: string; 상태: string }>(sheet);
+  return XLSX.utils.sheet_to_json<ExcelRow>(sheet);
+}
+
+/** 생일 컬럼(신규) 또는 주민등록번호(구형)에서 생일을 반환한다. */
+function getBirthday(row: ExcelRow): string | null {
+  if (row.생일) return row.생일;
+  if (row.주민등록번호) return extractBirthday(String(row.주민등록번호));
+  return null;
 }
 
 function getDataDir() {
@@ -103,7 +91,7 @@ export function fetchMonthlyStats(): MonthlyStat[] {
   const processedNames = new Set<string>();
 
   rows.forEach((row) => {
-    const birthday = extractBirthday(String(row.주민등록번호 || ''));
+    const birthday = getBirthday(row);
     if (!birthday) return;
     const monthIdx = parseInt(birthday.split('-')[1]) - 1;
     if (monthIdx < 0 || monthIdx >= 12) return;
@@ -136,7 +124,7 @@ export function fetchEmployeeSummary(): EmployeeSummary {
   const processedNames = new Set<string>();
 
   rows.forEach((row) => {
-    const birthday = extractBirthday(String(row.주민등록번호 || ''));
+    const birthday = getBirthday(row);
     if (!birthday) return;
 
     const name = row['이름(호칭)'] || '';
@@ -179,7 +167,7 @@ export function fetchBirthdayEmployeesFromExcel(month: number): BirthdayEmployee
       name: row['이름(호칭)'] || '',
       employeeId: row.사번 || '',
       department: row.소속 || '',
-      birthday: extractBirthday(String(row.주민등록번호 || '')),
+      birthday: getBirthday(row),
       email: row.이메일 || '',
       status: row.상태 || '',
     }))

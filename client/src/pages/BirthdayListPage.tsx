@@ -58,13 +58,13 @@ export default function BirthdayListPage() {
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th w={60}>번호</Table.Th>
-                <Table.Th>이름</Table.Th>
-                <Table.Th w={110}>사번</Table.Th>
-                <Table.Th>소속</Table.Th>
-                <Table.Th w={100}>상태</Table.Th>
-                <Table.Th>이메일</Table.Th>
-                <Table.Th w={100}>생일</Table.Th>
+                <Table.Th w={50} ta="center">번호</Table.Th>
+                <Table.Th ta="center">이름</Table.Th>
+                <Table.Th ta="center">생일</Table.Th>
+                <Table.Th ta="center">상태</Table.Th>
+                <Table.Th ta="center">이메일</Table.Th>
+                <Table.Th ta="center">소속</Table.Th>
+                <Table.Th ta="center">사번</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -74,15 +74,13 @@ export default function BirthdayListPage() {
                 const icon = isHujik ? '⛱️' : '🎂';
                 return (
                   <Table.Tr key={idx} style={isDisabled ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}>
-                    <Table.Td>{idx + 1}</Table.Td>
-                    <Table.Td fw={500}>{icon} {emp.name}</Table.Td>
-                    <Table.Td>{emp.employeeId}</Table.Td>
-                    <Table.Td>{emp.department}</Table.Td>
-                    <Table.Td>{emp.status}</Table.Td>
-                    <Table.Td>{emp.email}</Table.Td>
-                    <Table.Td>
-                      {emp.birthday ? emp.birthday.slice(5) : '-'}
-                    </Table.Td>
+                    <Table.Td ta="center">{idx + 1}</Table.Td>
+                    <Table.Td ta="center" fw={500}>{icon} {emp.name}</Table.Td>
+                    <Table.Td ta="center">{emp.birthday ? emp.birthday.slice(5) : '-'}</Table.Td>
+                    <Table.Td ta="center">{emp.status}</Table.Td>
+                    <Table.Td ta="center">{emp.email}</Table.Td>
+                    <Table.Td ta="center">{emp.department}</Table.Td>
+                    <Table.Td ta="center">{emp.employeeId}</Table.Td>
                   </Table.Tr>
                 );
               })}

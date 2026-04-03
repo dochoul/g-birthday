@@ -7,6 +7,7 @@ import fs from 'fs';
 import authRouter from './routes/auth';
 import birthdaysRouter from './routes/birthdays';
 import uploadRouter from './routes/upload';
+import { migrateAllExcelFiles } from './utils/sanitizeExcel';
 
 // 필수 환경변수 검증
 const requiredEnvVars = ['HIWORKS_CLIENT_ID', 'HIWORKS_AUTH_URL', 'HIWORKS_ACCOUNT_API_URL', 'HIWORKS_REDIRECT_URI', 'HIWORKS_HR_API_URL'];
@@ -46,6 +47,9 @@ if (fs.existsSync(publicDir)) {
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  // 기존 엑셀 파일에 주민등록번호가 남아있다면 즉시 제거
+  const dataDir = process.env.DATA_DIR || path.join(__dirname, '../data');
+  migrateAllExcelFiles(dataDir);
 });
 
 export default app;

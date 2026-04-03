@@ -131,7 +131,7 @@ export default function UploadPage() {
             <List.Item>이름(호칭)</List.Item>
             <List.Item>사번</List.Item>
             <List.Item>소속</List.Item>
-            <List.Item>주민등록번호</List.Item>
+            <List.Item>주민등록번호 <Text span size="xs" c="red">(업로드 즉시 삭제, 생일만 보관)</Text></List.Item>
             <List.Item>이메일</List.Item>
             <List.Item>상태 (재직중 / 휴직중)</List.Item>
           </List>
