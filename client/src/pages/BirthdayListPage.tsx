@@ -71,7 +71,7 @@ export default function BirthdayListPage() {
             <Table.Tbody>
               {employees.map((emp, idx) => {
                 const isHujik = emp.status === '휴직중';
-                const isDisabled = isHujik;
+                const isDisabled = isHujik || emp.employmentType === '정규직-수습' || emp.employmentType === '인턴';
                 const icon = isHujik ? '⛱️' : '🎂';
                 return (
                   <Table.Tr key={idx} style={isDisabled ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}>
