@@ -59,10 +59,11 @@ export async function getEmployeeSummary(): Promise<EmployeeSummary> {
 
 export interface UploadHistoryEntry {
   timestamp: string;
-  uploaderName: string;
-  uploaderId: string;
-  count: number;
   fileName: string;
+  count: number;
+  정규직?: number;
+  정규직수습?: number;
+  인턴?: number;
 }
 
 export async function getUploadHistory(): Promise<UploadHistoryEntry[]> {
