@@ -18,6 +18,19 @@
 
 ---
 
+## 실행 화면
+
+### 월별 생일자 목록
+![월별 생일자 목록](docs/screenshots/birthday-list.png)
+
+### 월별 통계
+![월별 통계](docs/screenshots/stats.png)
+
+### 직원 명부 업로드
+![직원 명부 업로드](docs/screenshots/upload.png)
+
+---
+
 ## 다운로드
 
 | 플랫폼 | 파일 | 설명 |
