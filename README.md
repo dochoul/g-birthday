@@ -20,6 +20,8 @@
 
 ## 실행 화면
 
+> 실행 화면의 이름은 모두 가상의 인물입니다.
+
 ### 월별 생일자 목록
 ![월별 생일자 목록](docs/screenshots/birthday-list.png)
 
