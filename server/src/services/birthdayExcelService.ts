@@ -14,8 +14,8 @@ export interface BirthdayEmployee {
 
 /**
  * 이름에서 한글 이름을 추출한다.
- * "Diane(허다인)" → "허다인" (영문(국문) 형식)
- * "허다인(Diane)" → "허다인" (국문(영문) 형식)
+ * "Alice(김예린)" → "김예린" (영문(국문) 형식)
+ * "김예린(Alice)" → "김예린" (국문(영문) 형식)
  * "김민준" → "김민준" (국문만)
  */
 function extractKoreanName(name: string): string {

@@ -115,8 +115,8 @@ export async function fetchBirthdayEmployees(accessToken: string, month: number)
 
 export interface LeaveEmployee {
   user_no: number;
-  name: string;       // 예: "Diane(허다인)"
-  koreanName: string; // 예: "허다인"
+  name: string;       // 예: "Alice(김예린)"
+  koreanName: string; // 예: "김예린"
   birthday?: string;  // YYYY-MM-DD (API 응답에 있을 경우)
 }
 
@@ -140,7 +140,7 @@ export async function fetchLeaveEmployees(accessToken: string): Promise<LeaveEmp
     if (uniqueMap.has(userNo)) return; // 이미 추가된 사람은 스킵
 
     const name = emp.name || '';
-    // "Diane(허다인)" → "허다인" 추출
+    // "Alice(김예린)" → "김예린" 추출
     const match = name.match(/\(([^)]+)\)/);
     const koreanName = match ? match[1] : name;
     const birthday = emp.birthday || emp.birth_date || emp.birth_day || undefined;
